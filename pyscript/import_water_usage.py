@@ -50,6 +50,7 @@ def import_yesterdays_water_usage(
         mains_water_serial=mains_water_serial,
         sew_username=sew_username,
         sew_password=sew_password,
+        target_date="",
         browserless=browserless,
         token=token,
         recycled_water_stat_id=recycled_water_stat_id,
