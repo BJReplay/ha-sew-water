@@ -16,6 +16,48 @@ GET_RECYCLED = False
 
 
 @service  # noqa: F821
+def import_yesterdays_water_usage(
+    mains_water_stat_id,
+    mains_water_serial,
+    sew_username,
+    sew_password,
+    browserless: str,
+    token: str,
+    recycled_water_stat_id: str = "",
+    recycled_water_serial: str = "",
+):
+    """Get Water Usage for Yesterday.
+
+    description: Imports Water Usage from South East Water's
+    Website.  Logs In, Navigates to Water Usage Summary,
+    Downloads Data for given date, Imports into Sensor(s).
+
+    Arguments:
+        mains_water_stat_id: The sensor to return the mains water usage to. Example: sensor.water_usage_mains
+        mains_water_serial: The serial number of the mains water meter. Example: SAHA000000
+        sew_username: Your Username for the South East Water (SEW) website. Example: myusername@gmail.com
+        sew_password: Your Password for the South East Water (SEW) website. Example: myC0mpl3xP@55w0rd
+        browserless: The URL that the browserless instance is running on. Example: http://localhost:3000
+        token: The browserless token to use. Example: 6R0W53R135510
+
+    Keyword Arguments:
+        recycled_water_stat_id: The sensor to return the mains water usage to. Example: sensor.water_usage_recycled (default: {""})
+        recycled_water_serial: The serial number of the mains water meter. Example: RAHA000000 (default: {""})
+
+    """
+    import_water_usage(
+        mains_water_stat_id=mains_water_stat_id,
+        mains_water_serial=mains_water_serial,
+        sew_username=sew_username,
+        sew_password=sew_password,
+        browserless=browserless,
+        token=token,
+        recycled_water_stat_id=recycled_water_stat_id,
+        recycled_water_serial=recycled_water_serial,
+    )
+
+
+@service  # noqa: F821
 def import_water_usage(
     mains_water_stat_id,
     mains_water_serial,
