@@ -21,10 +21,20 @@ export default async function ({ page, context }) {
 
   const { mains_water_serial, sew_username, sew_password, get_recycled, target_date, recycled_water_serial } = context;
 
-  // cast date parameter to date only and convert to unix format
-  let date = new Date(target_date);
-  date.setHours(0, 0, 0 ,0);
-  let target_unix_date = date.valueOf();
+  var target_unix_date = new Date()
+
+  if (isBlank(target_date)) {
+    // Use Yesterday's date
+    let yesterdayDate = new Date();
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+    yesterdayDate.setHours(0, 0, 0 ,0);
+    target_unix_date = yesterdayDate.valueOf();
+  } else {
+    // cast date parameter to date only and convert to unix format
+    let date = new Date(target_date);
+    date.setHours(0, 0, 0 ,0);
+    target_unix_date = date.valueOf();
+  }
 
   // only check for recycled if the flag is passed or the meter serial is non-blank
   let recycled = new Boolean();
