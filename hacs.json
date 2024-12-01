@@ -1,0 +1,7 @@
+{
+    "name": "SEW Water Usage",
+    "render_readme": true,
+    "homeassistant": "2024.11",
+    "zip_release": true,
+    "filename": "ha-sew-water.zip"
+}
