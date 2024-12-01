@@ -20,6 +20,7 @@ class SEWDataUpdateCoordinator(DataUpdateCoordinator):
         """Initialise the data update coordinator."""
         self.collector = collector
         self._hass: HomeAssistant = hass
+        self._version: str = "0.1"
 
         DEFAULT_SCAN_INTERVAL = datetime.timedelta(
             hours=SCAN_INTERVAL

@@ -1,8 +1,6 @@
 """Support for South East Water Usage, initialisation."""
 
-from dataclasses import dataclass
 import logging
-from typing import Any
 
 from aiohttp.client_exceptions import ClientConnectorError
 
@@ -14,15 +12,20 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 
 from .collector import Collector
-from .const import DOMAIN, MAINS_WATER_SERIAL, RECYCLED_WATER_SERIAL, BROWSERLESS, TOKEN, INSTALL_DATE
+from .const import (
+    BROWSERLESS,
+    DOMAIN,
+    INSTALL_DATE,
+    MAINS_WATER_SERIAL,
+    RECYCLED_WATER_SERIAL,
+    TOKEN,
+)
 from .coordinator import SEWDataUpdateCoordinator
+from .data import SEWConfigEntry, SEWData
 
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS = [Platform.SENSOR]
-
-type SEWConfigEntry = ConfigEntry[SEWData]
-
 
 async def async_migrate_entry(hass: HomeAssistant, entry: SEWConfigEntry) -> bool:
     """Migrate old entry."""
@@ -177,11 +180,3 @@ async def async_remove_config_entry_device(
     """
     dr(hass).async_remove_device(device.id)
     return True
-
-
-@dataclass
-class SEWData:
-    """SEW options for the integration."""
-
-    coordinator: SEWDataUpdateCoordinator
-    other_data: dict[str, Any]
