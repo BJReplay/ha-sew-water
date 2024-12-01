@@ -2,20 +2,34 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import date
+import logging
 from typing import Any
 
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult, OptionsFlow
+from homeassistant.config_entries import (
+    ConfigEntry,
+    ConfigFlow,
+    # ConfigFlowResult,
+    OptionsFlow,
+)
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import callback
+from homeassistant.data_entry_flow import FlowResult
 
 from .collector import Collector
+from .const import (
+    BROWSERLESS,
+    DOMAIN,
+    INSTALL_DATE,
+    MAINS_WATER_SERIAL,
+    RECYCLED_WATER_SERIAL,
+    TITLE,
+    TOKEN,
+)
 from .coordinator import SEWDataUpdateCoordinator
-from .const import DOMAIN, TITLE, MAINS_WATER_SERIAL, RECYCLED_WATER_SERIAL, BROWSERLESS, TOKEN, INSTALL_DATE
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -33,40 +47,68 @@ class SEWConfigFlow(ConfigFlow, domain=DOMAIN):
     CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
 
     async def _create_entry(
-        self, mains_water_serial: str, sew_username: str, sew_password: str, browserless: str, token: str, install_date: date | None, recycled_water_serial: str | None
-    ) -> ConfigFlowResult:
+        self,
+        mains_water_serial: str,
+        sew_username: str,
+        sew_password: str,
+        browserless: str,
+        token: str,
+        install_date: date | None,
+        recycled_water_serial: str | None,
+    ) -> FlowResult:
         """Register new entry."""
         return self.async_create_entry(
             title=f"Water Readings for {mains_water_serial}",
-            data={MAINS_WATER_SERIAL: mains_water_serial, CONF_USERNAME: sew_username, CONF_PASSWORD: sew_password, BROWSERLESS: browserless, TOKEN: token, INSTALL_DATE: install_date, RECYCLED_WATER_SERIAL: recycled_water_serial},
+            data={
+                MAINS_WATER_SERIAL: mains_water_serial,
+                CONF_USERNAME: sew_username,
+                CONF_PASSWORD: sew_password,
+                BROWSERLESS: browserless,
+                TOKEN: token,
+                INSTALL_DATE: install_date,
+                RECYCLED_WATER_SERIAL: recycled_water_serial,
+            },
         )
 
     async def _create_device(
-        self, mains_water_serial: str, sew_username: str, sew_password: str, browserless: str, token: str, install_date: date | None, recycled_water_serial: str | None 
-    ) -> ConfigFlowResult:
+        self,
+        mains_water_serial: str,
+        sew_username: str,
+        sew_password: str,
+        browserless: str,
+        token: str,
+        install_date: date | None,
+        recycled_water_serial: str | None,
+    ) -> FlowResult:
         """Create device."""
+
+        self.collector = Collector(
+            mains_water_serial=mains_water_serial,
+            sew_username=sew_username,
+            sew_password=sew_password,
+            browserless=browserless,
+            token=token,
+            recycled_water_serial=recycled_water_serial,
+            install_date=install_date,
+        )
 
         try:
             device = SEWDataUpdateCoordinator(
                 hass=self.hass,
-                mains_water_serial=mains_water_serial,
-                sew_username=sew_username,
-                sew_password=sew_password,
-                browserless=browserless,
+                collector=Collector,
             )
             await device.async_init()
 
-
             # check that we found cars
-            if not len(device.get_cars()):
+            if not len(device.get_version()):
                 return self.async_abort(reason="No cars found")
 
-            # check if we have a token, otherwise throw exception
-            if device.polestar_api.auth.access_token is None:
-                _LOGGER.exception(
-                    "No token, Could be wrong credentials (invalid email or password))"
-                )
-                return self.async_abort(reason="No API token")
+            # # check if we have a token, otherwise throw exception
+            # if device.polestar_api.auth.access_token is None:
+            #     _LOGGER.exception(
+            #         "No token, Could be wrong credentials (invalid email or password))"
+            #     )
+            #     return self.async_abort(reason="No API token")
 
         except TimeoutError:
             return self.async_abort(reason="API timeout")
@@ -74,7 +116,15 @@ class SEWConfigFlow(ConfigFlow, domain=DOMAIN):
             _LOGGER.exception("Unexpected error creating device")
             return self.async_abort(reason="API unexpected failure")
 
-        return await self._create_entry(mains_water_serial,sew_username,sew_password,browserless,token,install_date,recycled_water_serial)
+        return await self._create_entry(
+            mains_water_serial,
+            sew_username,
+            sew_password,
+            browserless,
+            token,
+            install_date,
+            recycled_water_serial,
+        )
 
     @staticmethod
     @callback
@@ -92,14 +142,14 @@ class SEWConfigFlow(ConfigFlow, domain=DOMAIN):
         """
         return SEWOptionFlowHandler(config_entry)
 
-    async def async_step_user(self, user_input: dict | None = None) -> ConfigFlowResult:
+    async def async_step_user(self, user_input: dict | None = None) -> FlowResult:
         """Handle a flow initiated by the user.
 
         Arguments:
             user_input: dict | None = None: The config submitted by a user. Defaults to None.
 
         Returns:
-            ConfigFlowResult: The form to show.
+            FlowResult: The form to show.
 
         """
 
@@ -107,38 +157,39 @@ class SEWConfigFlow(ConfigFlow, domain=DOMAIN):
             return self.async_show_form(
                 step_id="user",
                 data_schema=vol.Schema(
-                {
-                    vol.Required(MAINS_WATER_SERIAL, default=""): str,
-                    vol.Required(CONF_USERNAME, default=""): str,
-                    vol.Required(CONF_PASSWORD, default=""): str,
-                    vol.Required(BROWSERLESS, default=""): str,
-                    vol.Required(TOKEN, default=""): str,
-                    vol.Optional(INSTALL_DATE, default=date.today): date,
-                    vol.Optional(RECYCLED_WATER_SERIAL, default=""): str,
-                }
+                    {
+                        vol.Required(MAINS_WATER_SERIAL, default=""): str,
+                        vol.Required(CONF_USERNAME, default=""): str,
+                        vol.Required(CONF_PASSWORD, default=""): str,
+                        vol.Required(BROWSERLESS, default=""): str,
+                        vol.Required(TOKEN, default=""): str,
+                        vol.Optional(INSTALL_DATE, default=date.today): date,
+                        vol.Optional(RECYCLED_WATER_SERIAL, default=""): str,
+                    }
                 ),
             )
-            return await self._create_device( 
-                    mains_water_serial=user_input[MAINS_WATER_SERIAL],
-                    sew_username=user_input[CONF_USERNAME],
-                    sew_password=user_input[CONF_PASSWORD],
-                    browserless=user_input[BROWSERLESS],
-                    token=user_input[TOKEN],
-                    install_date=user_input[INSTALL_DATE],
-                    recycled_water_serial=user_input[RECYCLED_WATER_SERIAL],
-                )
+        return await self._create_device(
+            mains_water_serial=user_input[MAINS_WATER_SERIAL],
+            sew_username=user_input[CONF_USERNAME],
+            sew_password=user_input[CONF_PASSWORD],
+            browserless=user_input[BROWSERLESS],
+            token=user_input[TOKEN],
+            install_date=user_input[INSTALL_DATE],
+            recycled_water_serial=user_input[RECYCLED_WATER_SERIAL],
+        )
 
-    async def async_step_import(self, user_input: dict) -> ConfigFlowResult:
+    async def async_step_import(self, user_input: dict) -> FlowResult:
         """Import a config entry."""
-        return await self._create_device( 
-                mains_water_serial=user_input[MAINS_WATER_SERIAL],
-                sew_username=user_input[CONF_USERNAME],
-                sew_password=user_input[CONF_PASSWORD],
-                browserless=user_input[BROWSERLESS],
-                token=user_input[TOKEN],
-                install_date=user_input[INSTALL_DATE],
-                recycled_water_serial=user_input[RECYCLED_WATER_SERIAL],
-            )
+        return await self._create_device(
+            mains_water_serial=user_input[MAINS_WATER_SERIAL],
+            sew_username=user_input[CONF_USERNAME],
+            sew_password=user_input[CONF_PASSWORD],
+            browserless=user_input[BROWSERLESS],
+            token=user_input[TOKEN],
+            install_date=user_input[INSTALL_DATE],
+            recycled_water_serial=user_input[RECYCLED_WATER_SERIAL],
+        )
+
 
 class SEWOptionFlowHandler(OptionsFlow):
     """Handle options."""
@@ -166,9 +217,13 @@ class SEWOptionFlowHandler(OptionsFlow):
         sew_password = self._options.get(CONF_PASSWORD)
         browserless = self._options.get(BROWSERLESS)
         token = self._options.get(TOKEN)
-        install_date= self._options.get(INSTALL_DATE)
+        install_date = self._options.get(INSTALL_DATE)
         collector: Collector = Collector(
-            mains_water_serial=mains_water_serial, sew_username=sew_username, sew_password=sew_password, browserless=browserless, token=token
+            mains_water_serial=mains_water_serial,
+            sew_username=sew_username,
+            sew_password=sew_password,
+            browserless=browserless,
+            token=token,
         )
         await collector.async_setup()
         if not collector.valid_location_list():
@@ -196,7 +251,7 @@ class SEWOptionFlowHandler(OptionsFlow):
             sew_username = user_input[CONF_USERNAME]
             all_config_data[CONF_USERNAME] = sew_username
 
-            install_date= user_input[INSTALL_DATE]
+            install_date = user_input[INSTALL_DATE]
             all_config_data[INSTALL_DATE] = install_date
 
             token = user_input[TOKEN]

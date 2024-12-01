@@ -1,14 +1,20 @@
 {
   "domain": "sew_usage",
   "name": "South East Water Usage",
-  "after_dependencies": ["http"],
-  "codeowners": ["@BJReplay"],
+  "after_dependencies": [
+    "http"
+  ],
+  "codeowners": [
+    "@BJReplay"
+  ],
   "config_flow": true,
-  "dependencies": ["homeassistant"],
+  "dependencies": [],
   "documentation": "https://github.com/BJReplay/ha-sew-water",
   "integration_type": "service",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/BJReplay/ha-sew-water/issues",
-  "requirements": ["aiohttp>=3.8.5"],
-  "version": "0.1.4"
+  "requirements": [
+    "aiohttp>=3.8.5"
+  ],
+  "version": "v0.1.5"
 }
