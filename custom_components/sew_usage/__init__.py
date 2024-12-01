@@ -71,17 +71,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: SEWConfigEntry) -> bool:
     install_date= options.get(INSTALL_DATE)
     collector: Collector = Collector(
         mains_water_serial = mains_water_serial,
-        recycled_water_serial = recycled_water_serial,
         sew_username = sew_username,
         sew_password = sew_password,
         browserless = browserless,
-        token = token
+        token = token,
+        recycled_water_serial = recycled_water_serial,
+        install_date = install_date,
     )
     coordinator: SEWDataUpdateCoordinator = SEWDataUpdateCoordinator(
-        hass=hass, mains_water_serial=mains_water_serial,
-                sew_username=sew_username,
-                sew_password=sew_password,
-                browserless=browserless, install_date=install_date
+        hass=hass, collector=collector
     )
 
     entry.runtime_data = SEWData(coordinator, entry)

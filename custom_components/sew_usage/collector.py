@@ -53,45 +53,27 @@ class Collector:
 
     def __init__(
         self,
-        api_key: str,
-        version_string: str = "1.0",
-        SEW_site_id: str = "",
-        latitude: float = 0,
-        longitude: float = 0,
+        mains_water_serial: str,
+        sew_username: str,
+        sew_password: str,
+        browserless: str,
+        token: str,
+        recycled_water_serial: str = "",
+        install_date: dt.date = dt.today,
     ) -> None:
         """Init collector."""
         self.location_data: dict = {}
         self.observation_data: dict = {}
-        self.latitude: float = latitude
-        self.longitude: float = longitude
-        self.api_key: str = api_key
-        self.version_string: str = version_string
-        self.until: str = ""
-        self.site_id: str = ""
-        self.site_name: str = ""
-        self.aqi: float = 0
-        self.aqi_24h: float = 0
-        self.aqi_pm25: str = ""
-        self.aqi_pm25_24h: str
-        self.confidence: float = 0
-        self.confidence_24h: float = 0
-        self.data_source_1h: str = ""
-        self.pm25: float = 0
-        self.pm25_24h: float = 0
-        self.total_sample: float = 0
-        self.total_sample_24h: float = 0
+        self.mains_water_serial: str = mains_water_serial
+        self.sew_username: str = sew_username
+        self.sew_password: str = sew_password
+        self.browserless: str = browserless
+        self.token: str = token
+        self.recycled_water_serial: str = recycled_water_serial
+        self.install_date: dt.date = install_date
         self.last_updated: dt = dt.fromtimestamp(0)
         self.site_found: bool = False
         self.sites_found: bool = False
-        self.headers: dict = {
-            "Accept": "application/json",
-            "User-Agent": "ha-SEW-integration/" + self.version_string,
-            "X-API-Key": self.api_key,
-        }
-
-        if SEW_site_id != "":
-            self.site_id = SEW_site_id
-            self.site_found = True
 
     async def get_location_data(self):
         """Get JSON location name from SEW API endpoint."""

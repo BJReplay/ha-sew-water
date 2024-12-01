@@ -16,10 +16,9 @@ _LOGGER = logging.getLogger(__name__)
 class SEWDataUpdateCoordinator(DataUpdateCoordinator):
     """Data update coordinator for SEW Water Readings."""
 
-    def __init__(self, hass: HomeAssistant, collector: Collector, version: str) -> None:
+    def __init__(self, hass: HomeAssistant, collector: Collector) -> None:
         """Initialise the data update coordinator."""
         self.collector = collector
-        self._version: str = version
         self._hass: HomeAssistant = hass
 
         DEFAULT_SCAN_INTERVAL = datetime.timedelta(

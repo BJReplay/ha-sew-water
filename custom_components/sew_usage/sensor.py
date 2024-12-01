@@ -1,4 +1,4 @@
-"""Support for SEW Water Sensors."""
+"""Support for South East Water Sensors."""
 
 from __future__ import annotations
 
