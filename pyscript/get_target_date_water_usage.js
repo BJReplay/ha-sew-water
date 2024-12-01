@@ -3,16 +3,22 @@ const isBlank = function (str) {
     return (!!!str || /^\s*$/.test(str));
   };
 
-// construct man body for aura including date and meter serial
+// construct main body for aura including date and meter serial
 const req_body = function (date_for, meter_serial) {
-    return 'message=%7B%22actions%22%3A%5B%7B%22id%22%3A%222576%3Ba%22%2C%22descriptor%22%3A%22apex%3A%2F%2Fcm_AccountBillingUsageAURA%2FACTION%24getDigitalMeterUsage%22%2C%22callingDescriptor%22%3A%22markup%3A%2F%2Fc%3APortalDataHub%22%2C%22params%22%3A%7B%22a'
+    return 'message=%7B%22actions%22%3A%5B%7B%22id%22%3A%222576%3Ba%22%2C%22descriptor%22%3A%22apex%3A%2F%2Fcm_AccountBillingUsage'
+        + 'AURA%2FACTION%24getDigitalMeterUsage%22%2C%22callingDescriptor%22%3A%22markup%3A%2F%2Fc%3APortal'
+        + 'DataHub%22%2C%22params%22%3A%7B%22a'
         + 'DateFrom%22%3A' + date_for
         + '%2C%22a'
         + 'DateTo%22%3A' + date_for
         + '%2C%22aContext%22%3A%22Daily%22%2C%22'
         + 'meterSerialNos%22%3A%5B%22' + meter_serial
         + '%22%5D%2C%22billingAccIds%22%3A%5B%22a085K000003DW2kQAG%22%5D%2C%22aDataRequest%22%3A%22dataUsage%22%7D%7D%5D%7D'
-        + '&aura.context=%7B%22mode%22%3A%22PROD%22%2C%22fwuid%22%3A%22eGx3MHlRT1lEMUpQaWVxbGRUM1h0Z2hZX25NdHFVdGpDN3BnWlROY1ZGT3cyNTAuOC40LTYuNC41%22%2C%22app%22%3A%22siteforce%3AcommunityApp%22%2C%22loaded%22%3A%7B%22APPLICATION%40markup%3A%2F%2Fsiteforce%3AcommunityApp%22%3A%22wi0I2YUoyrm6Lo80fhxdzA%22%2C%22COMPONENT%40markup%3A%2F%2Finstrumentation%3Ao11ySecondaryLoader%22%3A%221JitVv-ZC5qlK6HkuofJqQ%22%7D%2C%22dn%22%3A%5B%5D%2C%22globals%22%3A%7B%7D%2C%22uad%22%3Afalse%7D'
+        + '&aura.context=%7B%22mode%22%3A%22PROD%22%2C%22fwuid%22%3A%22'
+        + 'eGx3MHlRT1lEMUpQaWVxbGRUM1h0Z2hZX25NdHFVdGpDN3BnWlROY1ZGT3cyNTAuOC40LTYuNC41%22%2C%22app%22%3A%22siteforce%3A'
+        + 'communityApp%22%2C%22loaded%22%3A%7B%22APPLICATION%40markup%3A%2F%2Fsiteforce%3AcommunityApp%22%3A%22'
+        + 'wi0I2YUoyrm6Lo80fhxdzA%22%2C%22COMPONENT%40markup%3A%2F%2Finstrumentation%3Ao11ySecondaryLoader%22%3A%22'
+        + '1JitVv-ZC5qlK6HkuofJqQ%22%7D%2C%22dn%22%3A%5B%5D%2C%22globals%22%3A%7B%7D%2C%22uad%22%3Afalse%7D'
         + '&aura.pageURI=%2Fs%2Fusage'
         + '&aura.token=';
 }
