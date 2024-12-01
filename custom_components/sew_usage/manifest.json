@@ -1,5 +1,5 @@
 {
-  "domain": "sew_water_usage",
+  "domain": "sew_usage",
   "name": "SEW Water Usage",
   "after_dependencies": ["http"],
   "codeowners": ["@BJReplay"],
