@@ -3,6 +3,7 @@ name: "Release"
 on:
   release:
     types: [published, edited]
+  workflow_dispatch:
 
 permissions: {}
 
