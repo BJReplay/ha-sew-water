@@ -5,20 +5,26 @@
               "title": "[%key:common::config_flow::title%]",
               "description": "[%key:common::config_flow::description%]",
                 "data": {
-                    "api_key": "[%key:common::config_flow::data::api_key%]",
-                    "latitude": "[%key:common::config_flow::data::latitude%]",
-                    "longitude": "[%key:common::config_flow::data::longitude%]",
-                    "site_id": "[%key:common::config_flow::data::site_id%]"
+                    "mains_water_serial": "[%key:common::config_flow::data::mains_water_serial%]",
+                    "sew_username": "[%key:common::config_flow::data::sew_username%]",
+                    "sew_password": "[%key:common::config_flow::data::sew_password%]",
+                    "browserless": "[%key:common::config_flow::data::browserless%]",
+                    "token": "[%key:common::config_flow::data::token%]",
+                    "install_date": "[%key:common::config_flow::data::install_date%]",
+                    "recycled_water_serial": "[%key:common::config_flow::data::recycled_water_serial%]"
                 }
             },
             "location": {
                 "title": "[%key:common::config_flow::title%]",
                 "description": "[%key:common::config_flow::description%]",
                   "data": {
-                      "api_key": "[%key:common::config_flow::data::api_key%]",
-                      "latitude": "[%key:common::config_flow::data::latitude%]",
-                      "longitude": "[%key:common::config_flow::data::longitude%]",
-                      "site_id": "[%key:common::config_flow::data::site_id%]"
+                      "mains_water_serial": "[%key:common::config_flow::data::mains_water_serial%]",
+                      "sew_username": "[%key:common::config_flow::data::sew_username%]",
+                      "sew_password": "[%key:common::config_flow::data::sew_password%]",
+                      "browserless": "[%key:common::config_flow::data::browserless%]",
+                      "token": "[%key:common::config_flow::data::token%]",
+                      "install_date": "[%key:common::config_flow::data::install_date%]",
+                      "recycled_water_serial": "[%key:common::config_flow::data::recycled_water_serial%]"
                   }
               }
         },
@@ -35,10 +41,13 @@
               "title": "[%key:common::config_flow::title%]",
               "description": "[%key:common::config_flow::description%]",
                 "data": {
-                    "api_key": "[%key:common::config_flow::data::api_key%]",
-                    "latitude": "[%key:common::config_flow::data::latitude%]",
-                    "longitude": "[%key:common::config_flow::data::longitude%]",
-                    "site_id": "[%key:common::config_flow::data::site_id%]"
+                    "mains_water_serial": "[%key:common::config_flow::data::mains_water_serial%]",
+                    "sew_username": "[%key:common::config_flow::data::sew_username%]",
+                    "sew_password": "[%key:common::config_flow::data::sew_password%]",
+                    "browserless": "[%key:common::config_flow::data::browserless%]",
+                    "token": "[%key:common::config_flow::data::token%]",
+                    "install_date": "[%key:common::config_flow::data::install_date%]",
+                    "recycled_water_serial": "[%key:common::config_flow::data::recycled_water_serial%]"
                 }
             }
         },

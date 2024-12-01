@@ -8,25 +8,29 @@
         },
         "step": {
             "user": {
-                "title": "Set up EPA (Victoria) Air Monitoring",
-                "description": "You need to sign up for an EPA Developer account as described in the readme and obtain an API Key.",
+                "title": "Set up South East Water Usage",
+                "description": "You need to sign up for an South East Water account as described on the card you received when your digital water meter was installed.",
                 "data": {
-                    "api_key": "API Key",
-                    "latitude": "Latitude",
-                    "longitude": "Longitude",
-                    "site_id": "EPA Site ID",
-                    "choose_site": "Choose EPA Site"
+                    "mains_water_serial": "Water Meter Number",
+                    "sew_username": "Username",
+                    "sew_password": "Password",
+                    "browserless": "Browserless URL",
+                    "token": "Browserless Token",
+                    "install_date": "Date Digital Meter was Installed",
+                    "recycled_water_serial": "Recycled Meter Number (or blank)"
                 }
             },
             "location": {
                 "title": "Set up EPA (Victoria) Air Monitoring",
                 "description": "Latitude and longitude will be used to find the nearest EPA air quality monitoring station to obtain air quality data for your location.\n\nThe default values come from your homeassistant \"Home\" zone (See Settings/Areas & Zones/Zones).",
                 "data": {
-                    "api_key": "API Key",
-                    "latitude": "Latitude",
-                    "longitude": "Longitude",
-                    "site_id": "EPA Site ID",
-                    "choose_site": "Choose EPA Site"
+                    "mains_water_serial": "Water Meter Number",
+                    "sew_username": "Username",
+                    "sew_password": "Password",
+                    "browserless": "Browserless URL",
+                    "token": "Browserless Token",
+                    "install_date": "Date Digital Meter was Installed",
+                    "recycled_water_serial": "Recycled Meter Number (or blank)"
                 }
             }
         }
@@ -43,11 +47,13 @@
                 "title": "Configure EPA (Victoria) Air Monitoring",
                 "description": "Change the API Key if required, latitude and longitude used to find the nearest weather station, or Site ID.",
                 "data": {
-                    "api_key": "API Key",
-                    "latitude": "Latitude",
-                    "longitude": "Longitude",
-                    "site_id": "EPA Site ID",
-                    "choose_site": "Choose EPA Site"
+                    "mains_water_serial": "Water Meter Number",
+                    "sew_username": "Username",
+                    "sew_password": "Password",
+                    "browserless": "Browserless URL",
+                    "token": "Browserless Token",
+                    "install_date": "Date Digital Meter was Installed",
+                    "recycled_water_serial": "Recycled Meter Number (or blank)"
                 }
 
             }
