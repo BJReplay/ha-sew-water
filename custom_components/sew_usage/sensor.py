@@ -29,7 +29,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import SEWConfigEntry
 from .collector import Collector
 from .const import (
     ATTR_ENTRY_TYPE,
@@ -43,6 +42,7 @@ from .const import (
     SENSOR_RECYCLED_UNIQUEID,
 )
 from .coordinator import SEWDataUpdateCoordinator
+from .data import SEWConfigEntry
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,8 +1,8 @@
-"""
-     Data Class.
+"""Data Class.
 
-    Data Class for Config Entry.
-    """
+   Data Class for Config Entry.
+
+"""
 from dataclasses import dataclass
 from typing import Any
 
