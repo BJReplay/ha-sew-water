@@ -23,7 +23,6 @@ from homeassistant.const import (
     UnitOfVolume,
 )
 from homeassistant.core import HomeAssistant, callback
-
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
@@ -37,9 +36,7 @@ from .const import (
     MANUFACTURER,
     SCAN_INTERVAL,
     SENSOR_MAINS,
-    SENSOR_MAINS_UNIQUEID,
     SENSOR_RECYCLED,
-    SENSOR_RECYCLED_UNIQUEID,
 )
 from .coordinator import SEWDataUpdateCoordinator
 from .data import SEWConfigEntry
@@ -49,7 +46,7 @@ _LOGGER = logging.getLogger(__name__)
 SENSORS: dict[str, SensorEntityDescription] = {
     SENSOR_MAINS: SensorEntityDescription(
         key=SENSOR_MAINS,
-        unique_id=SENSOR_MAINS_UNIQUEID,
+        # unique_id=SENSOR_MAINS_UNIQUEID,
         translation_key="water_usage_mains",
         name="Mains Water Usage",
         icon="mdi:water",
@@ -61,7 +58,7 @@ SENSORS: dict[str, SensorEntityDescription] = {
     ),
     SENSOR_RECYCLED: SensorEntityDescription(
         key=SENSOR_RECYCLED,
-        unique_id=SENSOR_RECYCLED_UNIQUEID,
+        # unique_id=SENSOR_RECYCLED_UNIQUEID,
         translation_key="water_usage_recycled",
         name="Recycled Water Usage",
         icon="mdi:water-opacity",
@@ -95,7 +92,11 @@ async def async_setup_entry(
 
     for sensor_types in SENSORS:
         sen = SEWQualitySensor(coordinator, SENSORS[sensor_types], entry)
-        entities.append(sen)
+        if sen.translation_key == "water_usage_recycled":
+            if coordinator.collector.get_recycled_water_serial() is not None:
+                entities.append(sen)
+        else:
+            entities.append(sen)
 
     async_add_entities(entities, update_before_add=False)
 
@@ -123,7 +124,7 @@ def get_sensor_update_policy() -> SensorUpdatePolicy:
 
 
 class SEWQualitySensor(CoordinatorEntity[SEWDataUpdateCoordinator], SensorEntity):
-    """Representation of a SEW Air Quality sensor device."""
+    """Representation of a South East Water sensor device."""
 
     _attr_attribution = ATTRIBUTION
     _attr_has_entity_name = True
@@ -168,9 +169,9 @@ class SEWQualitySensor(CoordinatorEntity[SEWDataUpdateCoordinator], SensorEntity
 
         self._attr_device_info = {
             ATTR_IDENTIFIERS: {(DOMAIN, entry.entry_id)},
-            ATTR_NAME: "SEW Air Quality",  # entry.title,
+            ATTR_NAME: "South East Water",  # entry.title,
             ATTR_MANUFACTURER: MANUFACTURER,
-            ATTR_MODEL: "SEW Air Quality",
+            ATTR_MODEL: "South East Water",
             ATTR_ENTRY_TYPE: DeviceEntryType.SERVICE,
             ATTR_SW_VERSION: self._coordinator.get_version,
             ATTR_CONFIGURATION_URL: "https://portal.api.SEW.vic.gov.au/",

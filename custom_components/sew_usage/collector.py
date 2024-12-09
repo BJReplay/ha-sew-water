@@ -72,164 +72,71 @@ class Collector:
         self.recycled_water_serial: str = recycled_water_serial
         self.install_date: dt.date = install_date
         self.last_updated: dt = dt.fromtimestamp(0)
-        self.site_found: bool = False
-        self.sites_found: bool = False
+        self.site_found: bool = True  # TODO Fix
 
-    async def get_location_data(self):
-        """Get JSON location name from SEW API endpoint."""
-        try:
-            if self.location_data is None:
-                self.observation_data = {}
-                self.site_found = True
-        except KeyError:
-            _LOGGER.debug(
-                "Exception in get_location_data(): %s",
-                traceback.format_exc(),
-            )
-            self.site_found = False
-
-    async def get_locations_list(self):
-        """Get JSON location list from SEW API endpoint."""
-        self.sites_found = True
-
-    def valid_location(self) -> bool:
-        """Return true if a valid location has been found from the latitude and longitude.
+    def valid_browserless(self) -> bool:
+        """Return true if a valid browserless has been found and logged into.
 
         Returns:
-            bool: True if a valid SEW location has been found
+            bool: True if a valid browserless has been found
 
         """
         return self.site_found
 
-    def valid_location_list(self) -> bool:
-        """Return true if a valid location list has been loaded.
+    def get_browserless(self) -> str:
+        """Return the browserless URL.
 
         Returns:
-            bool: True if a valid SEW location list has been loaded
+            str:  the browserless URL
 
         """
-        return self.sites_found
-
-    def get_location(self) -> str:
-        """Return the SEW Site Location GUID.
-
-        Returns:
-            str: SEW Site Location GUID
-
-        """
-        if self.site_found:
-            return self.site_id
+        if self.valid_browserless:
+            return self.browserless
         return ""
 
-    def get_location_list(self) -> list:
-        """Return the SEW Site Location GUID.
+    def get_mains_water_serial(self) -> str:
+        """Return the Mains Water Meter Serial Number.
 
         Returns:
-            str: SEW Site Location GUID
-
-        """
-        if self.sites_found:
-            return self.locations_list
-        return []
-
-    def get_aqi(self) -> float:
-        """Return the SEW Site aqi.
-
-        Returns:
-            float: SEW Site Calculated API
+            str: Mains Water Meter Serial Number
 
         """
         if self.site_found:
-            return self.aqi
-        return 0
-
-    def get_aqi_24h(self) -> float:
-        """Return the SEW Site aqi_24h.
-
-        Returns:
-            float: SEW Site Calculated API 24h Average
-
-        """
-        if self.site_found:
-            return self.aqi_24h
-        return 0
-
-    def get_aqi_pm25(self) -> str:
-        """Return the SEW Site aqi_pm25.
-
-        Returns:
-            str: SEW Site aqi_pm25
-
-        """
-        if self.site_found:
-            return self.aqi_pm25
+            return self.mains_water_serial
         return ""
 
-    def get_aqi_pm25_24h(self) -> str:
-        """Return the SEW Site aqi_pm25_24h.
+    def get_recycled_water_serial(self) -> str:
+        """Return the Recycled Water Meter Serial Number.
 
         Returns:
-            str: SEW Site aqi_pm25_24h
+            str: Recycled Water Meter Serial Number
 
         """
         if self.site_found:
-            return self.aqi_pm25_24h
+            return self.recycled_water_serial
         return ""
 
-    def get_confidence(self) -> float:
-        """Return the SEW reading confidence.
+    def get_sew_username(self) -> str:
+        """Return the SEW Username.
 
         Returns:
-            float: SEW reading confidence
+            str: SEW Username
 
         """
         if self.site_found:
-            return self.confidence
-        return 0
-
-    def get_confidence_24h(self) -> float:
-        """Return the SEW reading confidence over 24 hours.
-
-        Returns:
-            float: SEW reading confidence over 24 hours
-
-        """
-        if self.site_found:
-            return self.confidence_24h
-        return 0
-
-    def get_data_source(self) -> str:
-        """Return the SEW Reading Data Source.
-
-        Returns:
-            str: SEW Site Reading Data Source for the 1 Hour Reading
-
-        """
-        if self.site_found:
-            return self.data_source_1h
+            return self.sew_username
         return ""
 
-    def get_pm25(self) -> float:
-        """Return the SEW Site pm25.
+    def get_sew_password(self) -> str:
+        """Return the SEW Password.
 
         Returns:
-            str: SEW Site pm25
+            str: SEW Password
 
         """
         if self.site_found:
-            return self.pm25
-        return 0
-
-    def get_pm25_24h(self) -> float:
-        """Return the SEW Site pm25_24h.
-
-        Returns:
-            str: SEW Site pm25_24h
-
-        """
-        if self.site_found:
-            return self.pm25_24h
-        return 0
+            return self.sew_password
+        return ""
 
     def get_total_sample(self) -> float:
         """Return the SEW reading total samples.
@@ -282,12 +189,11 @@ class Collector:
         """Extract Observation Data to individual fields."""
         self.observation_data = {}
 
-
     @Throttle(datetime.timedelta(minutes=5))
     async def async_update(self):
         """Refresh the data on the collector object."""
         try:
-            if self.location_data is None:
+            if self.site_found:
                 self.observation_data = {}
 
         except ConnectionRefusedError as e:
@@ -301,7 +207,7 @@ class Collector:
     async def async_setup(self):
         """Set up the location list for the collector object."""
         try:
-            if self.location_data is None:
+            if self.site_found:
                 self.observation_data = {}
 
         except ConnectionRefusedError as e:
