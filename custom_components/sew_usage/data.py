@@ -1,8 +1,9 @@
 """Data Class.
 
-   Data Class for Config Entry.
+Data Class for Config Entry.
 
 """
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -20,4 +21,4 @@ class SEWData:
 
     coordinator: SEWDataUpdateCoordinator
     integration: Integration
-    other_data: dict[str, Any]
+    other_data: dict[str, Any] | None

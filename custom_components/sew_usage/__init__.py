@@ -10,6 +10,7 @@ from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
+from homeassistant.loader import async_get_loaded_integration
 
 from .collector import Collector
 from .const import (
@@ -26,6 +27,7 @@ from .data import SEWConfigEntry, SEWData
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS = [Platform.SENSOR]
+
 
 async def async_migrate_entry(hass: HomeAssistant, entry: SEWConfigEntry) -> bool:
     """Migrate old entry."""
@@ -71,21 +73,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: SEWConfigEntry) -> bool:
     sew_password = options.get(CONF_PASSWORD)
     browserless = options.get(BROWSERLESS)
     token = options.get(TOKEN)
-    install_date= options.get(INSTALL_DATE)
+    install_date = options.get(INSTALL_DATE)
     collector: Collector = Collector(
-        mains_water_serial = mains_water_serial,
-        sew_username = sew_username,
-        sew_password = sew_password,
-        browserless = browserless,
-        token = token,
-        recycled_water_serial = recycled_water_serial,
-        install_date = install_date,
+        mains_water_serial=mains_water_serial,
+        sew_username=sew_username,
+        sew_password=sew_password,
+        browserless=browserless,
+        token=token,
+        recycled_water_serial=recycled_water_serial,
+        install_date=install_date,
     )
     coordinator: SEWDataUpdateCoordinator = SEWDataUpdateCoordinator(
         hass=hass, collector=collector
     )
 
-    entry.runtime_data = SEWData(coordinator, entry)
+    entry.runtime_data = SEWData(
+        coordinator=coordinator,
+        integration=async_get_loaded_integration(hass, entry.domain),
+        other_data=entry,
+    )
 
     _LOGGER.debug("Successful init")
 

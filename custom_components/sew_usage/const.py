@@ -8,7 +8,7 @@ from typing import Final
 ATTR_ENTRY_TYPE: Final = "entry_type"
 ATTRIBUTION: Final = "Data retrieved from South East Water"
 COLLECTOR: Final = "collector"
-DOMAIN = "SEW_water_usage"
+DOMAIN: Final = "sew_usage"
 ENTRY_TYPE_SERVICE: Final = "service"
 COORDINATOR: Final = "coordinator"
 UPDATE_LISTENER: Final = "update_listener"
@@ -23,7 +23,7 @@ Beta versions may also have addressed issues so look at those.
 If all else fails, then open an issue and our community will try to
 help: https://github.com/BJReplay/ha-sew-water/issues"""
 MANUFACTURER = "BJReplay"
-TITLE = "SEW Water Usage"
+TITLE = "South East Water Usage"
 SENSOR_MAINS = "water_usage_mains"
 SENSOR_MAINS_UNIQUEID = "current_water_mains_usage"
 SENSOR_RECYCLED = "water_usage_recycled"
