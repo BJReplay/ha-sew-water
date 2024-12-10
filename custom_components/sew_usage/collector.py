@@ -5,6 +5,8 @@ from datetime import datetime as dt
 import logging
 import traceback
 
+import aiohttp
+
 from homeassistant.util import Throttle
 
 # from .const import (
@@ -72,9 +74,12 @@ class Collector:
         self.recycled_water_serial: str = recycled_water_serial
         self.install_date: dt.date = install_date
         self.last_updated: dt = dt.fromtimestamp(0)
-        self.site_found: bool = True  # TODO Fix
+        self.site_found: bool = False
 
-    def valid_browserless(self) -> bool:
+        if self.browserless[-1:] != "/":
+            self.browserless += "/"
+
+    async def valid_browserless(self) -> bool:
         """Return true if a valid browserless has been found and logged into.
 
         Returns:
@@ -101,20 +106,18 @@ class Collector:
             str: Mains Water Meter Serial Number
 
         """
-        if self.site_found:
-            return self.mains_water_serial
-        return ""
+        return self.mains_water_serial
 
-    def get_recycled_water_serial(self) -> str:
+    def get_recycled_water_serial(self) -> str | None:
         """Return the Recycled Water Meter Serial Number.
 
         Returns:
             str: Recycled Water Meter Serial Number
 
         """
-        if self.site_found:
-            return self.recycled_water_serial
-        return ""
+        if self.recycled_water_serial == "":
+            return None
+        return self.recycled_water_serial
 
     def get_sew_username(self) -> str:
         """Return the SEW Username.
@@ -123,9 +126,7 @@ class Collector:
             str: SEW Username
 
         """
-        if self.site_found:
-            return self.sew_username
-        return ""
+        return self.sew_username
 
     def get_sew_password(self) -> str:
         """Return the SEW Password.
@@ -134,31 +135,7 @@ class Collector:
             str: SEW Password
 
         """
-        if self.site_found:
-            return self.sew_password
-        return ""
-
-    def get_total_sample(self) -> float:
-        """Return the SEW reading total samples.
-
-        Returns:
-            float: SEW reading total samples
-
-        """
-        if self.site_found:
-            return self.total_sample
-        return 0
-
-    def get_total_sample_24h(self) -> float:
-        """Return the SEW reading total samples over 24 hours.
-
-        Returns:
-            float: SEW reading total samples over 24 hours
-
-        """
-        if self.site_found:
-            return self.total_sample_24h
-        return 0
+        return self.sew_password
 
     def get_until(self) -> str:
         """Return the SEW Reading Validity.
@@ -185,10 +162,6 @@ class Collector:
                 return "Sensor %s Not Found!"
         return None
 
-    async def extract_observation_data(self):
-        """Extract Observation Data to individual fields."""
-        self.observation_data = {}
-
     @Throttle(datetime.timedelta(minutes=5))
     async def async_update(self):
         """Refresh the data on the collector object."""
@@ -205,11 +178,14 @@ class Collector:
             )
 
     async def async_setup(self):
-        """Set up the location list for the collector object."""
+        """Check that browserless is running for the collector object."""
         try:
-            if self.site_found:
-                self.observation_data = {}
-
+            if not self.site_found:
+                async with aiohttp.ClientSession() as session:
+                    url = f"{self.browserless}active?token={self.token}"
+                    response = await session.get(url)
+                    if response is not None and response.status == 204:
+                        self.site_found = True
         except ConnectionRefusedError as e:
             _LOGGER.error("Connection error in async_setup, connection refused: %s", e)
         except Exception:  # noqa: BLE001
