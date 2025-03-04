@@ -14,7 +14,6 @@ CODE = "code"
 CONTEXT = "context"
 GET_RECYCLED = False
 
-
 @service  # noqa: F821
 def import_yesterdays_water_usage(
     mains_water_stat_id,
@@ -56,7 +55,6 @@ def import_yesterdays_water_usage(
         recycled_water_stat_id=recycled_water_stat_id,
         recycled_water_serial=recycled_water_serial,
     )
-
 
 @service  # noqa: F821
 def import_water_usage(
@@ -122,7 +120,6 @@ def import_water_usage(
     # Import the data to statistics
     import_water_usage_data(mains_water_stat_id, "mains", usage_response_data)
 
-
 @service  # noqa: F821
 def import_file_water_usage(stat_id, file_path_under_config):
     """Get Water Usage by loading file.  Concatenates Config Dir / File Path.
@@ -145,7 +142,6 @@ def import_file_water_usage(stat_id, file_path_under_config):
 
     # Import the data to statistics
     import_water_usage_data(stat_id, "mains", usage_response_data)
-
 
 def import_water_usage_data(stat_id, type, data):
     """Import Water Usage Data.
@@ -192,7 +188,8 @@ def import_water_usage_data(stat_id, type, data):
         )
 
     log.info("Imported statistics")  # noqa: F821
-
+    if tally > starting_point:
+        state.set("input_datetime.last_water_date", start)
 
 @service  # noqa: F821
 def force_water_state(stat_id, tally):
