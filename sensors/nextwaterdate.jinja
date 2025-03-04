@@ -1,0 +1,1 @@
+{% set last_date = as_timestamp(as_timestamp(states('input_datetime.last_water_date')) | int | timestamp_local) | int %}{% set next_date = as_datetime(( last_date + (( 60 * 60 * 24 * 1 ) | int))) | string%}{{next_date[:10]}}
