@@ -23,5 +23,6 @@ You can manually set up the building blocks as described below.
 9. Add the snippet from `configuration.yaml` in the `configuration` folder to your `configuration.yaml` in your home assistant
 10. Restart home assistant
 11. Create an automation using the `importwaterusage.yaml` in the `automations` folder.
-12. Set the Last Water Date to 11am on the day before your digital water meter was installed.
-13. This should trigger the automation to get water readings day by day up to yesterday.  It waits one minute before each run to ensure that the last total is updated in the home assistant database so that it doesn't mess up totals, given the way that this integration inserts historical stats.
+12. Set the settings in the automation - water meter serial, South East Water userid and password, Browserless URL and Token
+13. Set the Last Water Date to 11am on the day before your digital water meter was installed.
+14. This should trigger the automation to get water readings day by day up to yesterday.  It waits one minute before each run to ensure that the last total is updated in the home assistant database so that it doesn't mess up totals, given the way that this integration inserts historical stats.
