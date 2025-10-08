@@ -2,46 +2,65 @@ alias: Import water usage
 description: Import water usage
 triggers:
   - trigger: time
-    at: "08:30:00"
-  - trigger: state
-    entity_id:
-      - sensor.next_water_date
-conditions:
-  - condition: template
-    value_template: >-
-      {{ as_local(as_datetime(states('sensor.next_water_date'))) < now() -
-      timedelta(days = 1) }}
+    at: "12:30:00"
+conditions: []
 actions:
-  - delay:
-      hours: 0
-      minutes: 1
-      seconds: 0
-      milliseconds: 0
-  - variables:
-      next_date: "{{ states('sensor.next_water_date') }}"
-  - if:
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: sensor.current_water_mains_usage
-            state: unavailable
-          - condition: state
-            entity_id: sensor.current_water_mains_usage
-            state: unknown
-    then:
-      - action: pyscript.force_water_state
-        data:
-          stat_id: sensor.water_usage_mains
-          tally: 0
-  - action: pyscript.import_water_usage
-    metadata: {}
-    data:
-      mains_water_stat_id: sensor.water_usage_mains
-      mains_water_serial: mainswaterserialnumberhere
-      sew_username: usernamehere
-      sew_password: passwordhere
-      browserless: http://browserless:3000
-      token: browserlesstokenhere
-      target_date: "{{ next_date }}"
+  - alias: Repeat while Next Water Date is before Yesterday and data retrieved
+    repeat:
+      sequence:
+        - if:
+            - condition: or
+              conditions:
+                - condition: state
+                  entity_id: sensor.current_water_mains_usage
+                  state: unavailable
+                - condition: state
+                  entity_id: sensor.current_water_mains_usage
+                  state: unknown
+              alias: If Water Usage Mains not set
+          then:
+            - action: pyscript.force_water_state
+              data:
+                stat_id: sensor.water_usage_mains
+                tally: 0
+              alias: Initialise Water Usage Mains
+          alias: If Water Usage Mains not set, Initialise Water Usage Mains
+        - variables:
+            next_date: "{{ states('sensor.next_water_date') }}"
+        - action: pyscript.import_water_usage
+          metadata: {}
+          data:
+            mains_water_stat_id: sensor.water_usage_mains
+            mains_water_serial: mainswaterserialnumberhere
+            sew_username: usernamehere
+            sew_password: passwordhere
+            browserless: http://browserless:3000
+            token: browserlesstokenhere
+            target_date: "{{ next_date }}"
+        - delay:
+            hours: 0
+            minutes: 1
+            seconds: 0
+            milliseconds: 0
+        - variables:
+            next_date: "{{ states('sensor.next_water_date') }}"
+            count: "{{count + 1}}"
+      while:
+        - condition: template
+          value_template: >-
+            {{ as_local(as_datetime(states('sensor.next_water_date'))) < now() -
+            timedelta(days = 1) }}
+          alias: If Next Water Date is before Yesterday
+        - condition: template
+          value_template: "{{ start_date_text != next_date }}"
+          alias: Next Water Date != Start Water Date
+        - condition: template
+          value_template: "{{ count < 10 }}"
+          alias: Count < 10
+variables:
+  start_date: "{{ states('sensor.next_water_date') }}"
+  next_date: empty
+  last_date: empty
+  count: 1
 mode: queued
 max: 2
