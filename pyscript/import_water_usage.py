@@ -21,7 +21,7 @@ def import_yesterdays_water_usage(
     sew_username,
     sew_password,
     browserless: str,
-    token: str,
+    token: str = "",
     recycled_water_stat_id: str = "",
     recycled_water_serial: str = "",
 ):
@@ -37,11 +37,11 @@ def import_yesterdays_water_usage(
         sew_username: Your Username for the South East Water (SEW) website. Example: myusername@gmail.com
         sew_password: Your Password for the South East Water (SEW) website. Example: myC0mpl3xP@55w0rd
         browserless: The URL that the browserless instance is running on. Example: http://localhost:3000
-        token: The browserless token to use. Example: 6R0W53R135510
 
     Keyword Arguments:
         recycled_water_stat_id: The sensor to return the mains water usage to. Example: sensor.water_usage_recycled (default: {""})
         recycled_water_serial: The serial number of the mains water meter. Example: RAHA000000 (default: {""})
+        token: The browserless token to use. Example: 6R0W53R135510, or blank if running on the HASS addon
 
     """
     import_water_usage(
@@ -53,8 +53,7 @@ def import_yesterdays_water_usage(
         browserless=browserless,
         token=token,
         recycled_water_stat_id=recycled_water_stat_id,
-        recycled_water_serial=recycled_water_serial,
-    )
+        recycled_water_serial=recycled_water_serial,    )
 
 @service  # noqa: F821
 def import_water_usage(
@@ -64,7 +63,7 @@ def import_water_usage(
     sew_password,
     target_date: datetime,
     browserless: str,
-    token: str,
+    token: str = "",
     recycled_water_stat_id: str = "",
     recycled_water_serial: str = "",
 ):
@@ -81,11 +80,11 @@ def import_water_usage(
         sew_password: Your Password for the South East Water (SEW) website. Example: myC0mpl3xP@55w0rd
         target_date: The date you want to import data for. Example: 2024-11-27
         browserless: The URL that the browserless instance is running on. Example: http://localhost:3000
-        token: The browserless token to use. Example: 6R0W53R135510
 
     Keyword Arguments:
         recycled_water_stat_id: The sensor to return the mains water usage to. Example: sensor.water_usage_recycled (default: {""})
         recycled_water_serial: The serial number of the mains water meter. Example: RAHA000000 (default: {""})
+        token: The browserless token to use. Example: 6R0W53R135510, or blank if running on the HASS addon
 
     """
 
@@ -107,11 +106,15 @@ def import_water_usage(
 
     headers = {"Content-Type": "application/json"}
     data = json.dumps({CODE: js_executable, CONTEXT: context})
+    if token == "" or token is None:
+        url = f"{browserless}/function"
+    else:
+        url = f"{browserless}/function?token={token}"
 
     usage_response = task.executor(  # noqa: F821
         requests.request,
         method="POST",
-        url=f"{browserless}/function?token={token}",
+        url=url,
         headers=headers,
         data=data,
     )
