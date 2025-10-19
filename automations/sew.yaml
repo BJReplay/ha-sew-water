@@ -37,7 +37,6 @@ automation:
                 sew_username: !secret sew_username
                 sew_password: !secret sew_password
                 browserless: !secret browserless_url
-                token: !secret browserless_token
                 target_date: "{{ next_date }}"
             - delay:
                 hours: 0
