@@ -27,7 +27,7 @@ You can manually set up the building blocks as described below.
 11. Copy `sew.yaml` from the `automations` folder into the `packages` folder
 12. If you don't have a `secrets.yaml` in your `config` folder, create one.
 13. Add the secrets from `secrets.yaml` in the `configuration` folder to your `secrets.yaml` in your home assistant
-14. Edit the secrets as required - your SEWL login details and browserless configuration.
+14. Edit the secrets as required - your SEWL login details and browserless configuration.  **Make sure you do not use localhost or 127.0.0.1 as the browserless location.**
 15. Check that you can reach your browserless URL - e.g. http://192.168.1.125:3000/config and http://192.168.1.125:3000/docs, otherwise the rest won't work.
 16. Restart home assistant
 17. Set the Last Water Date to 11am on the day before your digital water meter was installed.
