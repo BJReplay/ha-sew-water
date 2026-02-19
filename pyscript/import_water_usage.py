@@ -191,7 +191,7 @@ def import_water_usage_data(stat_id, type, data):
         datetime_object = datetime.strptime(data_date, "%Y-%m-%d %H:%M:%S") + timedelta(hours=idx)
 
         start = str(datetime_object.astimezone())
-        tally += litres #TODO
+        tally += litres
 
         statistic_element = {"start": start, "state": tally, "sum": tally, "max": tally}
 
