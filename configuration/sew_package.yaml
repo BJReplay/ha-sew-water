@@ -1,10 +1,47 @@
+recorder:
+  exclude:
+    entities:
+      # Disable recorder making entries for water usage
+      # It causes miscalculations with the retrospective imports
+      - sensor.water_usage_mains
+
+# Define main sensors for tracking water usage - this is what historical records are imported to
+template:
+  - sensor:
+      # Tracking water usage - mains
+      - name: "Water Usage Mains"
+        unique_id: water_usage_mains
+        device_class: water
+        state_class: total
+        unit_of_measurement: "L"
+        state: "{{ states('sensor.current_water_mains_usage') | float }}"
+        attributes:
+          sum: "{{ state_attr('sensor.current_water_mains_usage', 'sum') }}"
+
+# These sensors serve to give the main water sensors a consistent/up to date state that can 'persist' restarts
+sql:
+  - name: "Current Water Mains Usage"
+    unique_id: current_water_mains_usage
+    unit_of_measurement: "L"
+    device_class: water
+    column: "sum"
+    query: >
+      SELECT
+        max(statistics.state) as sum
+      FROM
+        statistics statistics
+        INNER JOIN statistics_meta ON statistics.metadata_id = statistics_meta.id
+      WHERE
+        statistics_meta.statistic_id = 'sensor.water_usage_mains'
+
+# This automation imports water usage up to yesterday.
 automation:
-  - id: "1759896007497"
+  - id: aaaa2299-6e1f-4802-8e56-97f509ed0ab9
     alias: Import water usage
     description: Import water usage
     triggers:
       - trigger: time
-        at: "12:30:00"
+        at: "10:30:00"
     conditions: []
     actions:
       - alias: Repeat while Next Water Date is before Yesterday and data retrieved
@@ -33,10 +70,11 @@ automation:
               metadata: {}
               data:
                 mains_water_stat_id: sensor.water_usage_mains
-                mains_water_serial: !secret mains_water_serial
                 sew_username: !secret sew_username
                 sew_password: !secret sew_password
                 browserless: !secret browserless_url
+                default_sew_baId: !secret sew_billing_account_id
+                default_sew_meterId: !secret sew_meter_id
                 target_date: "{{ next_date }}"
             - delay:
                 hours: 0
