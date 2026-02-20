@@ -1,6 +1,6 @@
 # ha-sew-water
 
-Home Assistant HACS integration to provide water meter readings for South East Water digital water meters
+Home Assistant package and additional components to provide water meter readings for South East Water digital water meters
 
 ## Not yet ready to install as an integration
 
