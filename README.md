@@ -1,5 +1,13 @@
 # ha-sew-water
 
+> [!WARNING]
+> This package is - as of June 2026 - no longer working.
+> 
+> South East Water has introduced two factor authentication (2FA) after their portal was offline for a couple of months and
+> the package has no way of presenting the login to the user to complete the 2FA login.
+>
+> Please do not raise an issue because it doesn't work due to this change introduced by South East Water.
+
 Home Assistant package and additional components to provide water meter readings for South East Water digital water meters
 
 ## Not yet ready to install as an integration
