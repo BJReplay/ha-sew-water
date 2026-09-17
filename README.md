@@ -1,5 +1,16 @@
 # ha-sew-water
 
+> [!TIP]
+> [@JimboHamez](https://github.com/JimboHamez/ha-sew-water) has developed an integration that does away with all of the prerequisites that this integration required, and is in very late beta testing.
+>
+> It is working for Jimbo, and a couple of other testers including me.
+>
+> I have switched to it, and I recommend you give it a go.
+>
+> You should try it out at https://github.com/JimboHamez/ha-sew-water
+>
+> This is the replacement for this set of components and is the way forward for accessing South East Water digital water meter data.
+
 > [!WARNING]
 > This package is - as of June 2026 - no longer working.
 > 
